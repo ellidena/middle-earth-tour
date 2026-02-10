@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Middle-Earth Attractions</title>
+
+    <link th:href="@{/main.css}" rel="stylesheet">
+
+</head>
+<body>
+<h1>Middle-Earth Tourist Attractions</h1>
+
+<table>
+    <tr>
+        <th>Name</th>
+
+        <th>Description</th>
+        <th>City</th>
+
+        <th>Price</th>
+
+        <!--- “This table header cell should stretch across 3 columns.” only cosmetic --->
+        <!--- instead of writing  <th></th> <th></th> <th></th> <th></th> --->
+        <!--- The table has seven columns total: name, description, price, city, edit, delete, tags --->
+        <th colspan="3"></th>
+    </tr>
+
+    <tr th:each="a : ${attractions}">
+
+        <td th:text="${a.name}"></td>
+        <td th:text="${a.description}"></td>
+        <td th:text="${a.city}"></td>
+        <td th:text="${a.ticketPrice} + ' silver'"></td>
+
+
+
+        <td>
+            <a th:href="@{|/attractions/${a.name}/edit|}">Edit</a>
+        </td>
+
+
+        <td>
+            <form th:action="@{|/attractions/${a.name}/delete|}" method="post">
+                <button type="submit">Delete</button>
+            </form>
+        </td>
+
+
+        <td>
+            <a th:href="@{|/attractions/${a.name}/tags|}">Tags</a>
+        </td>
+
+
+    </tr>
+</table>
+
+<br>
+
+<a href="/attractions/add">Add Attraction</a>
+
+</body>
+</html>
