@@ -72,4 +72,26 @@ public class TouristControllerTest {
 
         verify(service).add(any(TouristAttraction.class));
     }
+
+    @Test
+    void shouldShoWEditForm() throws Exception {
+        TouristAttraction mock = new TouristAttraction(
+                "Rivendell",
+                "Peaceful",
+                "Eriador",
+                List.of(),
+                0);
+
+        when(service.findByName("Rivendell")).thenReturn(mock);
+
+        when(service.getCities()).thenReturn(List.of("Eriador"));
+        when(service.getTags()).thenReturn(List.of("Elves"));
+
+        mockMvc.perform(get("/attractions/Rivendell/edit"))
+                .andExpect(status().isOk())
+                .andExpect(view().name("edit-attraction"))
+                .andExpect(model().attribute("attraction", mock))
+                .andExpect(model().attribute("cities", List.of("Eriador")))
+                .andExpect(model().attribute("tags",List.of("Elves")));
+    }
 }
