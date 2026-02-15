@@ -8,11 +8,14 @@ import org.springframework.test.web.servlet.MockMvc;
 import tourism.model.TouristAttraction;
 import tourism.service.TouristService;
 
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.verify;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 
 import java.util.List;
 
 import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(TouristController.class)
@@ -44,7 +47,7 @@ public class TouristControllerTest {
     }
 
     @Test
-    void showAddForm() throws Exception {
+    void shouldShowAddForm() throws Exception {
         when(service.getCities()).thenReturn(List.of("Gondor"));
         when(service.getTags()).thenReturn(List.of("Historical"));
 
@@ -55,5 +58,18 @@ public class TouristControllerTest {
                 .andExpect(model().attribute("cities", List.of("Gondor")))
                 .andExpect(model().attribute("tags", List.of("Historical")));
 
+    }
+
+    @Test
+    void shouldSaveAttraction() throws Exception{
+        mockMvc.perform(post("/attractions/save")
+                .param("name", "Mirkwood")
+                .param("description", "Spooky forest")
+                .param("city", "Eriador")
+                .param("ticketPrice", "10"))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/attractions"));
+
+        verify(service).add(any(TouristAttraction.class));
     }
 }
