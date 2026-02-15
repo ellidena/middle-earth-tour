@@ -94,4 +94,13 @@ public class TouristControllerTest {
                 .andExpect(model().attribute("cities", List.of("Eriador")))
                 .andExpect(model().attribute("tags",List.of("Elves")));
     }
+
+    @Test
+    void shouldDeleteAttraction() throws Exception {
+        mockMvc.perform(post("/attractions/Rivendell/delete"))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/attractions"));
+
+        verify(service).delete("Rivendell");
+    }
 }
