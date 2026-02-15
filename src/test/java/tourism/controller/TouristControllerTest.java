@@ -42,4 +42,18 @@ public class TouristControllerTest {
                 .andExpect(view().name("attractionlist"))
                 .andExpect(model().attribute("attractions", mockList));
     }
+
+    @Test
+    void showAddForm() throws Exception {
+        when(service.getCities()).thenReturn(List.of("Gondor"));
+        when(service.getTags()).thenReturn(List.of("Historical"));
+
+        mockMvc.perform(get("/attractions/add"))
+                .andExpect(status().isOk())
+                .andExpect(view().name("add-attraction"))
+                .andExpect(model().attributeExists("attraction"))
+                .andExpect(model().attribute("cities", List.of("Gondor")))
+                .andExpect(model().attribute("tags", List.of("Historical")));
+
+    }
 }
