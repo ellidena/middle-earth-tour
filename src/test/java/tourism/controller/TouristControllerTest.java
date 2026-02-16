@@ -1,13 +1,16 @@
 package tourism.controller;
 
 import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentCaptor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 import tourism.model.TouristAttraction;
 import tourism.service.TouristService;
+import org.junit.jupiter.api.Assertions.*;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -62,6 +65,7 @@ public class TouristControllerTest {
 
     @Test
     void shouldSaveAttraction() throws Exception{
+
         mockMvc.perform(post("/attractions/save")
                 .param("name", "Mirkwood")
                 .param("description", "Spooky forest")
@@ -69,6 +73,12 @@ public class TouristControllerTest {
                 .param("ticketPrice", "10"))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/attractions"));
+
+        ArgumentCaptor<TouristAttraction> captor = ArgumentCaptor.forClass(TouristAttraction.class);
+        verify(service).add(captor.capture());
+        TouristAttraction captured = captor.getValue();
+
+        assertEquals("Mirkwood", captured.getName());
 
         verify(service).add(any(TouristAttraction.class));
     }
